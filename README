@@ -2,7 +2,17 @@ SNTS - Simple Network Time Sync
 Version 1.0.3 - Protocol Version 1.0
 -------------------------------
 
-(c) 2000 Atrus Trivalie Productions.  All Right Reserved.
+****************************************************
+****************************************************
+WARNING: This code is an archive from 2002, it is
+not representitive of any modern development style,
+experience, skill, etc. There are likely many bugs
+and other issues herein. You have been warned.
+****************************************************
+****************************************************
+
+
+(c) 2000 Yann Ramin.  All Right Reserved.
 See file COPYING for License.   BSD-Style License.
 
 
@@ -147,9 +157,9 @@ Known Bugs/Lacking Features
 Contact
 -------
 
-Yann Ramin <atrus@atrustrivalie.eu.org> <yramin@redshift.com>
+Yann Ramin <atrus@stackworks.net>
 
-www.redshift.com/~yramin/atp/snts
+
 
 
 
