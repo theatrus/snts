@@ -1,0 +1,160 @@
+SNTS - Simple Network Time Sync
+Version 1.0.3 - Protocol Version 1.0
+-------------------------------
+
+(c) 2000 Atrus Trivalie Productions.  All Right Reserved.
+See file COPYING for License.   BSD-Style License.
+
+
+News
+----
+
+1.0.3:  Added a posibility for server to bind to other IP address
+
+1.0.2:  Noticed that someone reported the 1.0 buffer overflow on BugTraq :)
+        Dusted off code.
+        Fixed a segfault if the IP address of the host can not be obtained.
+        
+1.0.1:  Fixes a buffer overflow which allows John Doe to
+        kill sntsd/snts.
+        Squelched annoying NetBSD kernel messages.
+
+
+About
+-----
+
+SNTS is a simple, fast, and low overhead time syncronization
+systems for LANs.  It is designed as a simple replacement for timed
+with better time control and better portability (for systems without
+a standard adjtime() call, such as Linux).  SNTS is split into two main
+components:
+
+	snts - The SNTS client.
+	sntsd - The time server.
+	
+SNTS allows multiple groupings of servers on a network for independent time
+management for groups or labs.  SNTS also supports multiple servers in a single
+group, with elections choosing a master and other servers becoming bloated clients,
+until the server should shut down where a slave will become master.
+SNTS works on broadcast networks under IP
+datagrams (UDP).  Security is minimal, as SNTS is designed for simplicity.
+No lag negotiation is done as SNTS runs on low latency LANs, not higher latency
+remote connections.
+
+Deployment
+----------
+
+A machine which would act as the master SNTS time server should be picked.
+Syncing this computer's clock via NTP is advised.  The client program 'snts'
+should be distributed to each client running SNTS.  The server and client should
+be run at boot time via rc files or inittab, whatever your system has.   SNTS will
+then broadcast time syncs over the network and set them on the clients.
+Multiple servers are supported, but through an imperfect system, they choose a master
+(namely, the machine which does a normal time broadcast first) and let that machine broadcast,
+while the servers act as clients and set their time to the broadcasting server.
+
+Ok, I want some down to earth instructions
+------------------------------------------
+
+Ok, bit by bit:
+
+I recomend building the package on the machine you wish to use as
+a time server.  In the extracted directory, run
+
+	./configure
+	
+Everything should go fine, otherwise check error messages and figure
+out what the heck they mean.
+
+Then give building SNTS a shot:
+	
+	make
+	
+On some systems, you may wish to use GNU make, usualy installed as
+gmake.  Use whatever works.
+
+If you wish to just test the server, do a
+
+	make install
+	
+This will install snts and sntsd in /usr/local/sbin.  This would be
+different if you picked a different prefix at configure time.  Distribute the
+snts binary to another machine you wish to be a client (if its the same architecture).
+The server and client can NOT be run on the same machine as they bind to the same port.
+
+Power up sntsd on the server:
+
+	/usr/local/sbin/sntsd
+
+Power up snts on the client:
+
+	/usr/local/sbin/snts
+	
+(NOTE: Despite their names, both snts and sntsd are daemons that need to be
+run as root!)
+
+In a minute or two, the clock on the client should match the clock on the server.
+There is no limit to the number of clients on the wire.  A single broadcast will
+serve them all.
+
+If you want some redundancy or want each machine to have the possiblity of being
+a server, then consider deploying the server to several machines or every machine.
+The servers run by
+themselves and through an imperfect election system, pick a master with the other
+servers acting as clients until the master should cease to broadcast, where another
+server will start broadcasting.  Note that in this enviroment, servers should have
+the same broadcast interval as it affects the election system.
+
+
+Command Line Options
+--------------------
+
+=for sntsd=
+
+-g <#>
+
+This option specifies a new group number.  SNTS broadcasts contain a group id header
+which allows sysadmins to have multiple broadcast groups.  The client and server group id
+must match.  Default: 1
+
+-i <#>
+
+This option sets the broadcast interval for SNTS servers.  If you only want to sync once or
+twice a day, or every 5 seconds, take a look.  The # is in seconds.  Default: 240 (4 minutes)
+
+=for snts=
+
+-g <#>
+
+This option specifies a new group number.  SNTS broadcasts contain a group id header
+which allows sysadmins to have multiple broadcast groups.  The client and server group id
+must match.  Default: 1
+
+=for sntsd=
+
+-a <#.#.#.#>
+
+This option sets IP address to bind to
+
+
+Known Bugs/Lacking Features
+---------------------------
+
++ Peer-to-Peer for remote sites is not yet possible
++ A better allow/deny security feature is lacking
++ Its too simple :)
+
+Contact
+-------
+
+Yann Ramin <atrus@atrustrivalie.eu.org> <yramin@redshift.com>
+
+www.redshift.com/~yramin/atp/snts
+
+
+
+
+
+
+
+
